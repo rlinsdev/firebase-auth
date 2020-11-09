@@ -11,10 +11,10 @@ https://github.com/iamshaunjp/firebase-auth
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+Materialize
 
 ```
-Give examples
+https://materializecss.com/
 ```
 
 ### Installing
