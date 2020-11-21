@@ -1,3 +1,18 @@
+// listen for auth status cahnges
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    //console.log(`User Login: ${user}`);
+    db.collection('guides').get().then(snapshot =>{
+        console.log(2)
+        setupGuides(snapshot.docs);
+        setupUI(user);
+    });
+  } else {
+    setupUI();
+      setupGuides([]);
+  }
+});
+
 // singup
 const signupForm = document.querySelector('#signup-form');
 signupForm.addEventListener('submit', (e) => {
@@ -6,8 +21,6 @@ signupForm.addEventListener('submit', (e) => {
   // Get user Info
   const email = signupForm['signup-email'].value;
   const password = signupForm['signup-password'].value;
-
-  //console.log(email, password)
 
   //sign up the user
   auth.createUserWithEmailAndPassword(email, password).then((cred) => {
@@ -23,7 +36,8 @@ signupForm.addEventListener('submit', (e) => {
 const logout = document.querySelector('#logout');
 logout.addEventListener('click', (e) => {
   e.preventDefault();
-  auth.signOut().then(() => {});
+  auth.signOut();
+  console.log('loged out')
 });
 
 const loginForm = document.querySelector('#login-form');
@@ -34,7 +48,7 @@ loginForm.addEventListener('submit', (e) => {
   const password = loginForm['login-password'].value;
 
   auth.signInWithEmailAndPassword(email, password).then((response) => {
-    console.log(response);
+    //console.log(response);
     const modal = document.querySelector('#modal-login');
     M.Modal.getInstance(modal).close();
     signupForm.reset();
