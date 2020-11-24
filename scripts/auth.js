@@ -2,15 +2,34 @@
 auth.onAuthStateChanged((user) => {
   if (user) {
     //console.log(`User Login: ${user}`);
-    db.collection('guides').get().then(snapshot =>{
-        console.log(2)
+    db.collection('guides')
+      // .get()
+      // .then((snapshot) => {
+        .onSnapshot(snapshot => {
         setupGuides(snapshot.docs);
         setupUI(user);
-    });
+      });
   } else {
     setupUI();
-      setupGuides([]);
+    setupGuides([]);
   }
+});
+
+const createForm = document.querySelector('#create-form');
+createForm.addEventListener('submit',(e)=>{
+  e.preventDefault();
+
+  db.collection('guides').add({
+    title: createForm.title.value,
+    content: createForm.content.value
+  }).then(()=>{
+    // Close modal and reset form
+    const modal = document.querySelector('#modal-create');
+    M.Modal.getInstance(modal).close();
+    createForm.reset();
+  }).catch(err =>{
+    console.log(err.message);
+  })
 });
 
 // singup
@@ -37,7 +56,7 @@ const logout = document.querySelector('#logout');
 logout.addEventListener('click', (e) => {
   e.preventDefault();
   auth.signOut();
-  console.log('loged out')
+  console.log('loged out');
 });
 
 const loginForm = document.querySelector('#login-form');
